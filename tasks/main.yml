@@ -1,0 +1,40 @@
+---
+
+- name: store remote node name
+
+  set_fact:
+    remote_node: |
+      {{ ansible_ssh_host|default(inventory_hostname) }}
+
+- name: get IP of remote node
+
+  register: dig_
+  always_run: True
+  delegate_to: locahost
+  connection: local
+
+  command: dig +short {{ remote_node }}
+
+
+- name: Remove previous host name key from my known_hosts
+
+  delegate_to: locahost
+  connection: local
+
+  command: ssh-keygen -R {{ remote_node }}
+
+
+- name: Remove previous host ip key from my known_hosts
+
+  delegate_to: locahost
+  connection: local
+
+  command: ssh-keygen -R {{ dig_.stdout }}
+
+
+- name: And add hashed entry for new host keys
+
+  delegate_to: locahost
+  connection: local
+
+  shell: ssh-keyscan -t rsa,dsa,ecdsa -H {{ remote_node }} >> ~/.ssh/known_hosts
