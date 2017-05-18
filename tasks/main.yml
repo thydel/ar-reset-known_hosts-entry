@@ -10,7 +10,7 @@
 
   register: dig_
   check_mode: False
-  delegate_to: locahost
+  delegate_to: localhost
   connection: local
 
   command: dig +short {{ remote_node }}
