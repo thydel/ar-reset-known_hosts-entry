@@ -9,7 +9,7 @@
 - name: get IP of remote node
 
   register: dig_
-  always_run: True
+  check_mode: False
   delegate_to: locahost
   connection: local
 
@@ -18,7 +18,7 @@
 
 - name: Remove previous host name key from my known_hosts
 
-  delegate_to: locahost
+  delegate_to: localhost
   connection: local
 
   command: ssh-keygen -R {{ remote_node }}
@@ -26,7 +26,7 @@
 
 - name: Remove previous host ip key from my known_hosts
 
-  delegate_to: locahost
+  delegate_to: localhost
   connection: local
 
   command: ssh-keygen -R {{ dig_.stdout }}
@@ -34,7 +34,7 @@
 
 - name: And add hashed entry for new host keys
 
-  delegate_to: locahost
+  delegate_to: localhost
   connection: local
 
   shell: ssh-keyscan -t rsa,dsa,ecdsa -H {{ remote_node }} >> ~/.ssh/known_hosts
