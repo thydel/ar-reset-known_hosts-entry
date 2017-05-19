@@ -3,7 +3,7 @@
 - name: store remote node name
 
   set_fact:
-    remote_node: |
+    remote_node: |-
       {{ ansible_ssh_host|default(inventory_hostname) }}
 
 - name: get IP of remote node
@@ -28,6 +28,7 @@
 
   delegate_to: localhost
   connection: local
+  when: dig_.stdout != ''
 
   command: ssh-keygen -R {{ dig_.stdout }}
 
